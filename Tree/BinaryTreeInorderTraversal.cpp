@@ -20,6 +20,7 @@ The number of nodes in the tree is in the range [0, 100].
 -100 <= Node.val <= 100
 */
 
+//Space - O(N)
 class Solution {
 public:
     vector<int> inorderTraversal(TreeNode* root) {
@@ -38,6 +39,46 @@ public:
                 ptr = ptr->right;
             }
         }
+        return res;
+    }
+};
+
+
+//Morris Traversal : Space -  O(1)
+class Solution {
+public:
+    
+    vector<int> inorder(TreeNode* root) {
+        vector<int> ans;
+        TreeNode* cur = root;
+        while(cur) {
+            if(cur->left == NULL) {
+                ans.push_back(cur->val);
+                cur = cur->right;
+            }
+            else {
+                TreeNode* prev = cur->left;
+                while(prev->right && prev->right != cur) {
+                    prev = prev->right;
+                }
+                if(prev->right == NULL) {
+                    prev->right = cur;
+                    cur = cur->left;
+                }
+                else {
+                    prev->right = NULL;
+                    ans.push_back(cur->val);
+                    cur = cur->right;
+                }
+            }            
+        }
+        return ans;
+    }
+    
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root)
+            return inorder(root);
         return res;
     }
 };
