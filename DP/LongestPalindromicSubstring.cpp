@@ -17,6 +17,7 @@ Constraints:
 s consist of only digits and English letters.
 */
 
+//DP : T.C = O(N^2) , S.C = O(N^2)
 class Solution {
 public:
     
@@ -41,18 +42,53 @@ public:
             }
         }
         
-        for(int i = 3 ; i <= n ; i++) {
-            for(int j = 0, k = j+i-1 ; j <= n-i ; j++, k++) {
-                if(s[j] == s[k] && dp[j+1][k-1]) {
-                    dp[j][k] = true;
-                    start = j;
-                    max_len = i;
+        for(int len = 3 ; len <= n ; len++) {
+            for(int i = 0, j = i+len-1 ; i <= n-len ; i++, j++) {
+                if(s[i] == s[j] && dp[i+1][j-1]) {
+                    dp[i][j] = true;
+                    start = i;
+                    max_len = len;
                 }
                 else
-                    dp[j][k] = false;
+                    dp[i][j] = false;
             }
         }
         
         return s.substr(start, max_len);
+    }
+};
+
+
+//T.C = O(N^2) , S.C = O(1)
+class Solution {
+public:
+    
+    int palindromeLength(string s, int left, int right) {
+        while(left >= 0 && right < s.length() && s[left] == s[right]) {
+            left--;
+            right++;
+        }
+        return right-left-1;
+    }
+    
+    string longestPalindrome(string s) {
+        int n = s.length();
+        if(n <= 1)
+            return s;
+        
+        int start = 0, end = 0;
+        for(int i = 0 ; i < n ; i++) {
+            //odd len
+            int len1 = palindromeLength(s, i, i);
+            //even len
+            int len2 = palindromeLength(s, i, i+1);
+            
+            int len = max(len1, len2);
+            if(len >= (end-start+1)) {
+                start = i - (len-1)/2;
+                end = i + len/2;
+            }
+        }
+        return s.substr(start, (end-start+1));
     }
 };
